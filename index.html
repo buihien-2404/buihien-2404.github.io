@@ -75,10 +75,51 @@ body{
   .heart{font-size:70px;}
   #message{font-size:20px;}
 }
+  .decor{
+  position:absolute;
+  pointer-events:none;
+  user-select:none;
+  z-index:1;
+}
+
+/* góc trái trên */
+.decor1{
+  top:20px;
+  left:20px;
+  width:120px;
+  opacity:0.9;
+}
+
+/* góc phải dưới */
+.decor2{
+  bottom:30px;
+  right:30px;
+  width:150px;
+  opacity:0.8;
+}
+
+/* góc phải trên */
+.decor3{
+  top:40px;
+  right:40px;
+  width:90px;
+  opacity:0.7;
+}
+
+/* tối ưu điện thoại */
+@media(max-width:600px){
+  .decor1{width:80px;}
+  .decor2{width:100px;}
+  .decor3{width:60px;}
+}
+
 </style>
 </head>
 
 <body>
+<img src="flower.gif" class="decor decor1">
+<img src="sun.gif" class="decor decor2">
+<img src="cloud.gif" class="decor decor3">
 
 <div class="container">
   <div class="heart" onclick="startStory()">❤️</div>
