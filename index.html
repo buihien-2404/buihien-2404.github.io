@@ -63,9 +63,8 @@ body{
 </div>
 
 <!-- Nhạc nền -->
-<audio id="bgm" loop>
-  <source src="music.mp3" type="audio/mpeg">
-</audio>
+<audio id="bgm" loop preload="auto"></audio>
+
 
 <script>
 const MESSAGES = [
@@ -79,7 +78,21 @@ let index = 0;
 
 function showMessage(){
   const audio = document.getElementById("bgm");
-  audio.play().catch(()=>{});
+
+  if(!audio.src){
+    audio.src = "music.mp3";
+  }
+
+  audio.currentTime = 0;
+  audio.play();
+
+  const msg = document.getElementById("msg");
+  msg.innerText = MESSAGES[index];
+  msg.classList.add("show");
+
+  index = (index + 1) % MESSAGES.length;
+}
+
 
   const msg = document.getElementById("msg");
   msg.innerText = MESSAGES[index];
