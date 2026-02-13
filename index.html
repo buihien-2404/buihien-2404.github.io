@@ -9,17 +9,35 @@
 body{
   margin:0;
   height:100vh;
+  overflow:hidden;
   background:linear-gradient(135deg,#ff9a9e,#fad0c4);
+  font-family:sans-serif;
   display:flex;
   justify-content:center;
   align-items:center;
-  font-family:sans-serif;
-  overflow:hidden;
+  color:white;
+}
+
+/* nền sao */
+.star{
+  position:absolute;
+  width:4px;
+  height:4px;
+  background:white;
+  border-radius:50%;
+  opacity:0.7;
+  animation:fall linear infinite;
+}
+
+@keyframes fall{
+  from{transform:translateY(-10vh);}
+  to{transform:translateY(110vh);}
 }
 
 .container{
   text-align:center;
-  color:white;
+  z-index:2;
+  padding:20px;
 }
 
 .heart{
@@ -33,24 +51,27 @@ body{
   50%{transform:scale(1.2);}
 }
 
-.message{
-  margin-top:20px;
+#message{
+  margin-top:25px;
   font-size:22px;
+  line-height:1.6;
   max-width:90vw;
-  opacity:0;
-  transform:translateY(20px);
-  transition:0.6s;
+  min-height:120px;
 }
 
-.show{
-  opacity:1;
-  transform:translateY(0);
+/* con trỏ nhấp nháy */
+.cursor{
+  display:inline-block;
+  width:10px;
+  background:white;
+  margin-left:5px;
+  animation:blink 1s infinite;
 }
+@keyframes blink{50%{opacity:0;}}
 
-/* mobile đẹp hơn */
-@media (max-width:600px){
+@media(max-width:600px){
   .heart{font-size:70px;}
-  .message{font-size:20px;}
+  #message{font-size:20px;}
 }
 </style>
 </head>
@@ -58,49 +79,84 @@ body{
 <body>
 
 <div class="container">
-  <div class="heart" onclick="showMessage()">❤️</div>
-  <div id="msg" class="message"></div>
+  <div class="heart" onclick="startStory()">❤️</div>
+  <div id="message"></div>
 </div>
 
-<!-- Nhạc nền -->
 <audio id="bgm" loop preload="auto"></audio>
 
-
 <script>
-const MESSAGES = [
-  "Chúc bạn luôn vui vẻ 🌸",
-  "Chúc bạn học tốt và gặp nhiều may mắn 🍀",
-  "Cảm ơn vì đã xuất hiện trong cuộc đời mình 💖",
-  "Hy vọng hôm nay sẽ là một ngày thật đẹp ☀️"
+
+/* ====== lời chúc ====== */
+const LINES = [
+"Chào bạn,",
+"Có một điều nhỏ muốn gửi đến bạn hôm nay...",
+"Cảm ơn vì bạn đã xuất hiện",
+"Và làm cho những ngày bình thường trở nên đặc biệt hơn",
+"Chúc bạn luôn vui vẻ",
+"Luôn gặp nhiều may mắn",
+"Và luôn mỉm cười thật nhiều 🌸"
 ];
 
-let index = 0;
-
-function showMessage(){
+/* ====== phát nhạc ====== */
+function playMusic(){
   const audio = document.getElementById("bgm");
-
-  if(!audio.src){
-    audio.src = "music.mp3";
-  }
-
-  audio.currentTime = 0;
+  if(!audio.src) audio.src="music.mp3";
   audio.play();
-
-  const msg = document.getElementById("msg");
-  msg.innerText = MESSAGES[index];
-  msg.classList.add("show");
-
-  index = (index + 1) % MESSAGES.length;
 }
 
+/* ====== hiệu ứng đánh chữ ====== */
+const box = document.getElementById("message");
 
-  const msg = document.getElementById("msg");
-  msg.innerText = MESSAGES[index];
-  msg.classList.add("show");
+async function typeLine(text){
+  return new Promise(resolve=>{
+    let i=0;
+    const line=document.createElement("div");
+    box.appendChild(line);
 
-  index = (index + 1) % MESSAGES.length;
+    const cursor=document.createElement("span");
+    cursor.className="cursor";
+    line.appendChild(cursor);
+
+    const interval=setInterval(()=>{
+      line.insertBefore(document.createTextNode(text[i]),cursor);
+      i++;
+      if(i>=text.length){
+        clearInterval(interval);
+        cursor.remove();
+        setTimeout(resolve,700);
+      }
+    },35);
+  });
 }
+
+/* ====== bắt đầu ====== */
+let started=false;
+
+async function startStory(){
+  if(started) return;
+  started=true;
+
+  document.querySelector(".heart").style.display="none";
+  playMusic();
+
+  for(const line of LINES){
+    await typeLine(line);
+  }
+}
+
+/* ====== tạo sao rơi ====== */
+for(let i=0;i<40;i++){
+  const s=document.createElement("div");
+  s.className="star";
+  s.style.left=Math.random()*100+"vw";
+  s.style.animationDuration=(3+Math.random()*5)+"s";
+  s.style.opacity=Math.random();
+  document.body.appendChild(s);
+}
+
 </script>
 
 </body>
-</html>
+</h
+
